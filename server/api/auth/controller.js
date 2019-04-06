@@ -39,7 +39,7 @@ exports.signup = function (req, res, next) {
                             to: req.body.email,
                             subject: 'Confirm account',
                             html: pug.renderFile('server/api/auth/views/verifyEmailTemplate.pug', {
-                                url: 'www.google.com'
+                                url: config.accountActivationEmail
                             })
                         };
 
