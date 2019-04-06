@@ -4,51 +4,62 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const User = require('../user/userModel');
 const pug = require('pug');
+const Joi = require('joi');
+const { signupSchema } = require('./validationSchemas');
 
 const saltRounds = 10;
 
 exports.signup = function (req, res, next) {
-    bcrypt.hash(req.body.password, saltRounds).then(function (hash) {
-        crypto.randomBytes(20, (err, buffer) => {
-            let verificationToken = buffer.toString('hex');
 
-            const user = new User({
-                email: req.body.email,
-                password: hash,
-                verificationToken: verificationToken,
-                verified: false
-            });
+    Joi.validate(req.body, signupSchema, {abortEarly: false}, (err, value) => {
+        if (!err) {
+            bcrypt.hash(req.body.password, saltRounds).then(function (hash) {
+                crypto.randomBytes(20, (err, buffer) => {
+                    let verificationToken = buffer.toString('hex');
 
-            user.save((err, user) => {
+                    const user = new User({
+                        email: req.body.email,
+                        password: hash,
+                        verificationToken: verificationToken,
+                        verified: false
+                    });
 
-                var transporter = nodemailer.createTransport({
-                    service: 'gmail',
-                    auth: {
-                        user: config.mail.username,
-                        pass: config.mail.password
-                    }
+                    user.save((err, user) => {
+
+                        var transporter = nodemailer.createTransport({
+                            service: 'gmail',
+                            auth: {
+                                user: config.mail.username,
+                                pass: config.mail.password
+                            }
+                        });
+
+                        var mailOptions = {
+                            from: config.mail.username,
+                            to: req.body.email,
+                            subject: 'Confirm account',
+                            html: pug.renderFile('server/api/auth/views/verifyEmailTemplate.pug', {
+                                url: 'www.google.com'
+                            })
+                        };
+
+                        transporter.sendMail(mailOptions, function (error, info) {
+                            if (error) {
+                                console.log(error);
+                            } else {
+                                console.log(`An email was sent to ${req.body.email}`);
+                                return res.status(201).json("account created");
+                            }
+                        });
+                    });
                 });
-
-                var mailOptions = {
-                    from: config.mail.username,
-                    to: req.body.email,
-                    subject: 'Confirm account',
-                    html: pug.renderFile('server/api/auth/views/verifyEmailTemplate.pug', {
-                        url: 'www.google.com'
-                    })
-                };
-
-                transporter.sendMail(mailOptions, function (error, info) {
-                    if (error) {
-                        console.log(error);
-                    } else {
-                        console.log(`An email was sent to ${req.body.email}`);
-                        return res.status(201).json("account created");
-                    }
-                });
             });
-        });
-    });
+        }
+        else {
+            let errors = err.details.map(err => err.message);
+            res.status(400).json(errors);
+        }
+    })
 };
 
 exports.verifyAccount = function (req, res, next) {
