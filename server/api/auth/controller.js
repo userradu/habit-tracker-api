@@ -3,6 +3,7 @@ const config = require('../../config/config');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const User = require('../user/userModel');
+const pug = require('pug');
 
 const saltRounds = 10;
 
@@ -19,20 +20,22 @@ exports.signup = function (req, res, next) {
             });
 
             user.save((err, user) => {
-                
+
                 var transporter = nodemailer.createTransport({
                     service: 'gmail',
                     auth: {
-                        user: config.gmail.user,
-                        pass: config.gmail.password
+                        user: config.mail.username,
+                        pass: config.mail.password
                     }
                 });
 
                 var mailOptions = {
-                    from: config.gmail.user,
+                    from: config.mail.username,
                     to: req.body.email,
                     subject: 'Confirm account',
-                    html: '<p>some html</p>'
+                    html: pug.renderFile('server/api/auth/views/verifyEmailTemplate.pug', {
+                        url: 'www.google.com'
+                    })
                 };
 
                 transporter.sendMail(mailOptions, function (error, info) {
@@ -40,7 +43,7 @@ exports.signup = function (req, res, next) {
                         console.log(error);
                     } else {
                         console.log(`An email was sent to ${req.body.email}`);
-                        return res.status(201).json(user);
+                        return res.status(201).json("account created");
                     }
                 });
             });
@@ -48,10 +51,10 @@ exports.signup = function (req, res, next) {
     });
 };
 
-exports.verifyAccount = function(req, res, next) {
+exports.verifyAccount = function (req, res, next) {
     let email = req.body.email;
     let verificationToken = req.body.verificationToken;
-    User.findOne({email: email, verificationToken: verificationToken}, (err, user) => {
+    User.findOne({ email: email, verificationToken: verificationToken }, (err, user) => {
         if (user) {
             user.verified = true;
             user.verificationToken = null;
