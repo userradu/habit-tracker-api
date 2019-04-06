@@ -1,13 +1,8 @@
-var _ = require('lodash');
-
-var config = {
-  dev: 'development',
-  port: process.env.PORT || 3000
+module.exports = {
+  port: process.env.PORT,
+  gmail: {
+    user: process.env.GMAIL_USER,
+    password: process.env.GMAIL_PASSWORD
+  },
+  dbUrl: process.env.DB_URL
 };
-
-process.env.NODE_ENV = process.env.NODE_ENV || config.dev;
-config.env = process.env.NODE_ENV;
-
-var envConfig = require('./' + config.env);
-
-module.exports = _.merge(config, envConfig);
