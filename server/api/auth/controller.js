@@ -38,7 +38,7 @@ function createAccount(email, password, token) {
     return user.save();
 }
 
-function sendAccountConfirmationEmail(email) {
+function sendAccountConfirmationEmail(email, token) {
     var transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -52,7 +52,7 @@ function sendAccountConfirmationEmail(email) {
         to: email,
         subject: 'Confirm account',
         html: pug.renderFile('server/api/auth/views/verifyEmailTemplate.pug', {
-            url: config.accountActivationEmail
+            url: `${config.accountActivationEmail}?token=${token}`
         })
     };
 
@@ -62,6 +62,7 @@ function sendAccountConfirmationEmail(email) {
 
 exports.signup = function (req, res, next) {
     let passwordHash;
+    let activationToken;
 
     Joi.validate(req.body, signupSchema, { abortEarly: false })
         .then(() => {
@@ -72,10 +73,11 @@ exports.signup = function (req, res, next) {
             return generateVerificationToken();
         })
         .then((token) => {
+            activationToken = token;
             return createAccount(req.body.email, passwordHash, token);
         })
         .then(() => {
-            return sendAccountConfirmationEmail(req.body.email);
+            return sendAccountConfirmationEmail(req.body.email, activationToken);
         })
         .then(() => {
             return res.status(201).json({
@@ -100,10 +102,9 @@ function getUser(query) {
 exports.verifyAccount = function (req, res, next) {
     Joi.validate(req.body, verifyAccountSchema, { abortEarly: false })
         .then(() => {
-            let email = req.body.email;
             let verificationToken = req.body.verificationToken;
 
-            return getUser({ email: email, verificationToken: verificationToken });
+            return getUser({ verificationToken: verificationToken });
         })
         .then((user) => {
             if (!user) {
