@@ -1,50 +1,34 @@
 const Joi = require('joi');
+const utils = require('../../utils/utils');
 
 exports.signupSchema = Joi.object().keys({
-    email: Joi.string().email().required().error(errors => {
-        errors.forEach(err => {
-            switch (err.type) {
-                case "any.required":
-                    err.message = "The email is required";
-                    break;
-                case "string.email":
-                    err.message = "The email is not valid";
-                    break;
-                default:
-                    break;
-            }
-        });
-        return errors
-    }),
-    password: Joi.string().required().error(errors => {
-        errors.forEach(err => {
-            switch (err.type) {
-                case "any.required":
-                    err.message = "The password is required";
-                    break;
-                default:
-                    break;
-            }
-        });
-        return errors
-    })
+    email: Joi.string().email().required().error(errors => utils.setErrorMessages(errors, [
+        { 
+            errType: "any.required", 
+            message: "The email is required" 
+        },
+        { 
+            errType: "string.email", 
+            message: "The email is not valid" 
+        }
+    ])),
+    password: Joi.string().required().error(errors => utils.setErrorMessages(errors, [
+        { 
+            errType: "any.required", 
+            message: "The password is required" 
+        }
+    ]))
 });
 
 exports.verifyAccountSchema = Joi.object().keys({
-    verificationToken: Joi.string().required().error(errors => {
-        errors.forEach(err => {
-            switch (err.type) {
-                case "any.required":
-                    err.message = "The verification token is required";
-                    break;
-                case "string.base":
-                    err.message = "The verification token must be a string";
-                    break;
-                default:
-                    break;
-            }
-        });
-        return errors;
-    })
+    verificationToken: Joi.string().required().error(errors => utils.setErrorMessages(errors, [
+        { 
+            errType: "any.required", 
+            message: "The verification token is required" 
+        },
+        { 
+            errType: "string.base", 
+            message: "The verification token must be a string"
+        }
+    ]))
 });
-
