@@ -85,13 +85,13 @@ exports.signup = function (req, res, next) {
             return createAccount(req.body.email, passwordHash, token);
         })
         .then(() => {
-            return sendAccountConfirmationEmail(req.body.email, activationToken);
-        })
-        .then(() => {
             return res.status(201).json({
                 status: 'success',
                 message: 'Account created'
             });
+        })
+        .then(() => {
+            return sendAccountConfirmationEmail(req.body.email, activationToken);
         })
         .catch((err) => {
             if (err.isJoi) {
