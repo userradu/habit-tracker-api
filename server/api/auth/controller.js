@@ -66,6 +66,14 @@ exports.signup = function (req, res, next) {
 
     Joi.validate(req.body, signupSchema, { abortEarly: false })
         .then(() => {
+            return getUser({ email: req.body.email });
+        })
+        .then((user) => {
+            if (user) {
+                throw new HttpError(409, "The email is taken");
+            }
+        })
+        .then(() => {
             return generatePasswordHash(req.body.password);
         })
         .then((hash) => {
