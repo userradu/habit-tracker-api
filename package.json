@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "start_dev_server": "nodemon index.js",
-    "test": "NODE_ENV=test mocha --recursive --exit"
+    "test": "NODE_ENV=test mocha --recursive --timeout 10000 --exit"
   },
   "author": "HabitTracker",
   "license": "ISC",
