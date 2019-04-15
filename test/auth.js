@@ -1,7 +1,12 @@
 const expect = require('chai').expect;
 const request = require('supertest');
+const utils = require('../server/utils/utils');
 
 const app = require('../server/server');
+
+beforeEach((done) => {
+    utils.clearDatabase(done);
+});
 
 describe('Signup', () => {
     it('should create an account', (done) => {
