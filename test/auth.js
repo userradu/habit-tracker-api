@@ -12,7 +12,7 @@ describe('Signup', () => {
     it('should create an account', (done) => {
         request(app).post('/auth/signup')
             .send({
-                email: "userradu91@gmail.com",
+                email: "user@email.com",
                 password: "password",
                 confirm_password: "password"
             })
@@ -47,7 +47,7 @@ describe('Signup', () => {
     it('shoud throw an error if the passwords do not match', (done) => {
         request(app).post('/auth/signup')
             .send({
-                email: "userradu91@gmail.com",
+                email: "user@email.com",
                 password: "password",
                 confirm_password: "another password"
             })

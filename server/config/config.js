@@ -6,10 +6,6 @@ if (process.env.NODE_ENV !== 'production') {
 
 const config = {
   port: process.env.PORT || 3000,
-  mail: {
-    username: process.env.MAIL_USERNAME,
-    password: process.env.MAIL_PASSWORD
-  },
   accountActivationEmail: 'www.google.com'
 };
 

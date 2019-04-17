@@ -40,7 +40,8 @@ function createAccount(email, password, token) {
 
 function sendAccountConfirmationEmail(email, token) {
     var transporter = nodemailer.createTransport({
-        service: 'gmail',
+        host: config.mail.host,
+        port: config.mail.port,
         auth: {
             user: config.mail.username,
             pass: config.mail.password
