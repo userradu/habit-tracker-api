@@ -20,6 +20,10 @@ describe('Signup', () => {
             })
             .end((err, res) => {
                 expect(res.statusCode).to.equal(201);
+                expect(res.body).to.eql({
+                    status: 'success',
+                    message: 'Account created'
+                });
                 done();
             })
     });
@@ -29,6 +33,14 @@ describe('Signup', () => {
             .send({})
             .end((err, res) => {
                 expect(res.statusCode).to.equal(400);
+                expect(res.body).to.have.property('status');
+                expect(res.body.status).to.equal('error');
+                expect(res.body).to.have.property('message');
+                expect(res.body.message).to.have.members([
+                    'The email is required',
+                    'The password is required',
+                    'The confirm password field is required'
+                ]);
                 done();
             })
     });
@@ -42,6 +54,10 @@ describe('Signup', () => {
             })
             .end((err, res) => {
                 expect(res.statusCode).to.equal(400);
+                expect(res.body).to.eql({
+                    status: 'error',
+                    message: ['The email is not valid']
+                });
                 done();
             })
     });
@@ -55,6 +71,10 @@ describe('Signup', () => {
             })
             .end((err, res) => {
                 expect(res.statusCode).to.equal(400);
+                expect(res.body).to.eql({
+                    status: 'error',
+                    message: ['Password and confirm password do not match']
+                });
                 done();
             })
     });
@@ -87,7 +107,11 @@ describe('Confirm account', () => {
             })
             .end((err, res) => {
                 expect(res.statusCode).to.equal(200);
-                User.findOne({email: email}, (err, user) => {
+                expect(res.body).to.eql({
+                    status: 'success',
+                    message: 'Account verified'
+                });
+                User.findOne({ email: email }, (err, user) => {
                     expect(user.verificationToken).to.be.null;
                     expect(user.verified).to.be.true;
                     done();
@@ -100,6 +124,10 @@ describe('Confirm account', () => {
             .send({})
             .end((err, res) => {
                 expect(res.statusCode).to.equal(400);
+                expect(res.body).to.eql({
+                    status: 'error',
+                    message: ['The verification token is required']
+                });
                 done();
             })
     });
@@ -111,6 +139,10 @@ describe('Confirm account', () => {
             })
             .end((err, res) => {
                 expect(res.statusCode).to.equal(404);
+                expect(res.body).to.eql({
+                    status: 'error',
+                    message: "The account doesn't exists"
+                });
                 done();
             })
     });
