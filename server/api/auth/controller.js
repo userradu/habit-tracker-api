@@ -3,7 +3,6 @@ const config = require('../../config/config');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const User = require('../user/userModel');
-const pug = require('pug');
 const Joi = require('joi');
 const { signupSchema, verifyAccountSchema } = require('./validationSchemas');
 const HttpError = require('../exceptions/httpError');
@@ -38,7 +37,7 @@ function createAccount(email, password, token) {
     return user.save();
 }
 
-function sendAccountConfirmationEmail(email, token) {
+async function sendAccountConfirmationEmail(email, token) {
     var transporter = nodemailer.createTransport({
         host: config.mail.host,
         port: config.mail.port,
@@ -48,13 +47,15 @@ function sendAccountConfirmationEmail(email, token) {
         }
     });
 
+    var html = await utils.renderHTML('server/api/auth/templates/verifyEmailTemplate.ejs', {
+        url: `${config.accountActivationEmail}?token=${token}`
+    });
+    
     var mailOptions = {
         from: config.mail.username,
         to: email,
         subject: 'Confirm account',
-        html: pug.renderFile('server/api/auth/views/verifyEmailTemplate.pug', {
-            url: `${config.accountActivationEmail}?token=${token}`
-        })
+        html: html
     };
 
     return transporter.sendMail(mailOptions);

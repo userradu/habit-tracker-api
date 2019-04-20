@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const async = require('async');
+const ejs = require('ejs');
 
 exports.getJoiErrorMessages = function (err) {
     return err.details.map(err => err.message);
@@ -46,3 +47,16 @@ exports.clearDatabase = function (callback) {
 
     async.parallel(fns, () => callback());
 };
+
+exports.renderHTML = function(file, data) {
+    return new Promise((resolve, reject) => {
+        ejs.renderFile(file, data, function(err, str){
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve(str);
+            }
+        });
+    });
+}
