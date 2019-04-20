@@ -34,9 +34,10 @@ describe('Signup', () => {
             .end((err, res) => {
                 expect(res.statusCode).to.equal(400);
                 expect(res.body).to.have.property('status');
-                expect(res.body.status).to.equal('error');
-                expect(res.body).to.have.property('message');
-                expect(res.body.message).to.have.members([
+                expect(res.body.status).to.equal('fail');
+                expect(res.body).to.have.property('data');
+                expect(res.body.data).to.have.property('errors');
+                expect(res.body.data.errors).to.have.members([
                     'The email is required',
                     'The password is required',
                     'The confirm password field is required'
@@ -55,12 +56,42 @@ describe('Signup', () => {
             .end((err, res) => {
                 expect(res.statusCode).to.equal(400);
                 expect(res.body).to.eql({
-                    status: 'error',
-                    message: ['The email is not valid']
+                    status: 'fail',
+                    data: {
+                        errors: ['The email is not valid']
+                    }
                 });
                 done();
             })
     });
+
+    it('should throw an error if the email is taken', (done) => {
+        const user = new User({
+            email: "user@email.com",
+            password: "password",
+            verificationToken: "token",
+            verified: false
+        });
+
+        return user.save((err, user) => {
+            request(app).post('/auth/signup')
+            .send({
+                email: "user@email.com",
+                password: "password",
+                confirm_password: "password"
+            })
+            .end((err, res) => {
+                expect(res.statusCode).to.equal(409);
+                expect(res.body).to.eql({
+                    status: 'fail',
+                    data: {
+                        errors: ['The email is taken']
+                    }
+                });
+                done();
+            })
+        });
+    })
 
     it('shoud throw an error if the passwords do not match', (done) => {
         request(app).post('/auth/signup')
@@ -72,8 +103,10 @@ describe('Signup', () => {
             .end((err, res) => {
                 expect(res.statusCode).to.equal(400);
                 expect(res.body).to.eql({
-                    status: 'error',
-                    message: ['Password and confirm password do not match']
+                    status: 'fail',
+                    data: {
+                        errors: ['Password and confirm password do not match']
+                    }
                 });
                 done();
             })
@@ -125,8 +158,10 @@ describe('Confirm account', () => {
             .end((err, res) => {
                 expect(res.statusCode).to.equal(400);
                 expect(res.body).to.eql({
-                    status: 'error',
-                    message: ['The verification token is required']
+                    status: 'fail',
+                    data: {
+                        errors: ['The verification token is required']
+                    }
                 });
                 done();
             })
@@ -140,8 +175,10 @@ describe('Confirm account', () => {
             .end((err, res) => {
                 expect(res.statusCode).to.equal(404);
                 expect(res.body).to.eql({
-                    status: 'error',
-                    message: "The account doesn't exists"
+                    status: 'fail',
+                    data: {
+                        errors: ["The account doesn't exists"]
+                    }
                 });
                 done();
             })

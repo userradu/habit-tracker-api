@@ -5,7 +5,7 @@ const nodemailer = require('nodemailer');
 const User = require('../user/userModel');
 const Joi = require('joi');
 const { signupSchema, verifyAccountSchema } = require('./validationSchemas');
-const HttpError = require('../exceptions/httpError');
+const HttpClientError = require('../exceptions/httpClientError');
 const utils = require('../../utils/utils')
 
 function generatePasswordHash(password) {
@@ -70,7 +70,7 @@ exports.signup = async function (req, res, next) {
         const user = await getUser({ email: req.body.email });
 
         if (user) {
-            throw new HttpError(409, "The email is taken");
+            throw new HttpClientError(409, "The email is taken");
         }
 
         const passwordHash = await generatePasswordHash(req.body.password);
@@ -85,7 +85,7 @@ exports.signup = async function (req, res, next) {
 
     } catch (error) {
         if (error.isJoi) {
-            next(new HttpError(400, utils.getJoiErrorMessages(error)));
+            next(new HttpClientError(400, utils.getJoiErrorMessages(error)));
         }
         else {
             next(error);
@@ -105,7 +105,7 @@ exports.verifyAccount = async function (req, res, next) {
         const user = await getUser({ verificationToken: verificationToken });
 
         if (!user) {
-            throw new HttpError(404, "The account doesn't exists");
+            throw new HttpClientError(404, "The account doesn't exists");
         }
 
         user.verified = true;
@@ -118,7 +118,7 @@ exports.verifyAccount = async function (req, res, next) {
         });
     } catch (error) {
         if (error.isJoi) {
-            next(new HttpError(400, utils.getJoiErrorMessages(error)));
+            next(new HttpClientError(400, utils.getJoiErrorMessages(error)));
         }
         else {
             next(error);

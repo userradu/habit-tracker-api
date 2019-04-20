@@ -1,9 +1,24 @@
 exports.errorHandler =  function (err, req, res, next) {
     let status = err.status || 500;
-    let message = err.message || 'Something went wrong';
+    let response = {
+        status: null,
+        data: {}
+    };
 
-    return res.status(status).json({
-        status: 'error',
-        message: message
-    })
+    if (err.name == "HttpClientError") {
+        response.status = 'fail';
+        
+        if (err.message instanceof Array) {
+            response.data.errors = err.message;
+        }
+        else {
+            response.data.errors = [err.message];
+        }
+    }
+    else {
+        response.status = 'error',
+        response.message = 'Something went wrong';
+    }
+
+    return res.status(status).json(response)
 }
