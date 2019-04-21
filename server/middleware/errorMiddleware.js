@@ -1,3 +1,5 @@
+const winston = require('../config/winston');
+
 exports.errorHandler =  function (err, req, res, next) {
     let status = err.status || 500;
     let response = {
@@ -20,5 +22,6 @@ exports.errorHandler =  function (err, req, res, next) {
         response.message = 'Something went wrong';
     }
 
+    winston.error(`${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
     return res.status(status).json(response)
 }
