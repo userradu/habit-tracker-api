@@ -6,7 +6,8 @@ if (process.env.NODE_ENV !== 'production') {
 
 const config = {
   port: process.env.PORT || 3000,
-  accountActivationEmail: 'www.google.com'
+  accountActivationEmail: 'www.google.com',
+  jwt_secret: process.env.JWT_SECRET
 };
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
