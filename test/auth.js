@@ -12,7 +12,7 @@ describe('Signup', () => {
     });
 
     it('should create an account', (done) => {
-        request(app).post('/auth/signup')
+        request(app).post('/api/auth/signup')
             .send({
                 email: "user@email.com",
                 password: "password",
@@ -29,7 +29,7 @@ describe('Signup', () => {
     });
 
     it('shoud throw an error if the required fields are not specified', (done) => {
-        request(app).post('/auth/signup')
+        request(app).post('/api/auth/signup')
             .send({})
             .end((err, res) => {
                 expect(res.statusCode).to.equal(400);
@@ -47,7 +47,7 @@ describe('Signup', () => {
     });
 
     it('shoud throw an error if the email is not valid', (done) => {
-        request(app).post('/auth/signup')
+        request(app).post('/api/auth/signup')
             .send({
                 email: "invalidEmail",
                 password: "password",
@@ -74,7 +74,7 @@ describe('Signup', () => {
         });
 
         return user.save((err, user) => {
-            request(app).post('/auth/signup')
+            request(app).post('/api/auth/signup')
             .send({
                 email: "user@email.com",
                 password: "password",
@@ -94,7 +94,7 @@ describe('Signup', () => {
     })
 
     it('shoud throw an error if the passwords do not match', (done) => {
-        request(app).post('/auth/signup')
+        request(app).post('/api/auth/signup')
             .send({
                 email: "user@email.com",
                 password: "password",
@@ -134,7 +134,7 @@ describe('Confirm account', () => {
     });
 
     it('should confirm an account', (done) => {
-        request(app).post('/auth/verify-account')
+        request(app).post('/api/auth/verify-account')
             .send({
                 verificationToken: verificationToken
             })
@@ -153,7 +153,7 @@ describe('Confirm account', () => {
     });
 
     it('should thrown an error if the token parameter is missing from the request', (done) => {
-        request(app).post('/auth/verify-account')
+        request(app).post('/api/auth/verify-account')
             .send({})
             .end((err, res) => {
                 expect(res.statusCode).to.equal(400);
@@ -168,7 +168,7 @@ describe('Confirm account', () => {
     });
 
     it("should thrown an error if the provided token doesn't exist in the db", (done) => {
-        request(app).post('/auth/verify-account')
+        request(app).post('/api/auth/verify-account')
             .send({
                 verificationToken: 'non-existing-token'
             })

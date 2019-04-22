@@ -1,6 +1,7 @@
 const appRoot = require('app-root-path');
 const path = require("path");
 const fs = require("fs");
+const config = require('./config')
 const winston = require('winston');
 require('winston-daily-rotate-file');
 
@@ -22,11 +23,16 @@ const options = {
     }
 };
 
+const transports = [
+    new (winston.transports.DailyRotateFile)(options.file)
+]
+
+if (config.env !== 'test') {
+    transports.push(new winston.transports.Console(options.console))
+}
+
 const logger = winston.createLogger({
-    transports: [
-        new (winston.transports.DailyRotateFile)(options.file),
-        new winston.transports.Console(options.console)
-    ]
+    transports: transports
 });
 
 logger.stream = {
