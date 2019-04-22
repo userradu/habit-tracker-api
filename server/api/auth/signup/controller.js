@@ -1,12 +1,13 @@
 const bcrypt = require('bcrypt');
-const config = require('../../config/config');
+const appRoot = require('app-root-path');
+const config = require('../../../config/config');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
-const User = require('../user/userModel');
+const User = require('../../user/userModel');
 const Joi = require('joi');
 const { signupSchema, verifyAccountSchema } = require('./validationSchemas');
-const HttpClientError = require('../exceptions/httpClientError');
-const utils = require('../../utils/utils')
+const HttpClientError = require('../../exceptions/httpClientError');
+const utils = require('../../../utils/utils');
 
 function generatePasswordHash(password) {
     const saltRounds = 10;
@@ -47,7 +48,7 @@ async function sendAccountConfirmationEmail(email, token) {
         }
     });
 
-    var html = await utils.renderHTML('server/api/auth/templates/verifyEmailTemplate.ejs', {
+    var html = await utils.renderHTML(`${appRoot}/server/api/auth/signup/templates/verifyEmailTemplate.ejs`, {
         url: `${config.accountActivationEmail}?token=${token}`
     });
     

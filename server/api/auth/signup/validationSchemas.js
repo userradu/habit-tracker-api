@@ -1,5 +1,5 @@
 const Joi = require('joi');
-const utils = require('../../utils/utils');
+const utils = require('../../../utils/utils');
 
 exports.signupSchema = Joi.object().keys({
     email: Joi.string().email().required().error(errors => utils.setErrorMessages(errors, [
