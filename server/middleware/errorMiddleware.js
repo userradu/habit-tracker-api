@@ -3,12 +3,12 @@ const winston = require('../config/winston');
 exports.errorHandler =  function (err, req, res, next) {
     let status = err.status || 500;
     let response = {
-        status: null,
-        data: {}
+        status: null
     };
 
     if (err.name == "HttpClientError") {
         response.status = 'fail';
+        response.data = {};
         
         if (err.message instanceof Array) {
             response.data.errors = err.message;
