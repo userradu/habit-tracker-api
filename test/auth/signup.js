@@ -5,7 +5,7 @@ const User = require('../../server/api/user/userModel');
 
 const app = require('../../server/server');
 
-xdescribe('Signup', () => {
+describe('Signup', () => {
 
     beforeEach((done) => {
         utils.clearDatabase(done);
@@ -113,7 +113,7 @@ xdescribe('Signup', () => {
     });
 });
 
-xdescribe('Confirm account', () => {
+describe('Confirm account', () => {
     const verificationToken = 'token';
     const email = 'user@example.com';
     const password = 'password';
