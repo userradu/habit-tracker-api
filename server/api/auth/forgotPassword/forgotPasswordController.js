@@ -5,51 +5,15 @@ const { sendResetPasswordEmailSchema, resetPasswordSchema } = require('./validat
 const User = require('../../user/userModel');
 const bcrypt = require('bcrypt');
 const config = require('../../../config/config');
-const nodemailer = require('nodemailer');
-const crypto = require('crypto');
 const appRoot = require('app-root-path');
 
-function generateToken() {
-    return new Promise((resolve, reject) => {
-        crypto.randomBytes(20, (err, buffer) => {
-            if (err) {
-                reject(err);
-            }
-            else {
-                resolve(buffer.toString('hex'));
-            }
-        });
-    })
-}
-
-function generateHash(token) {
-    const saltRounds = 10;
-    return bcrypt.hash(token, saltRounds);
-}
-
 async function sendEmail(email, token) {
-    var transporter = nodemailer.createTransport({
-        host: config.mail.host,
-        port: config.mail.port,
-        auth: {
-            user: config.mail.username,
-            pass: config.mail.password
-        }
-    });
-
     const path = `${appRoot}/server/api/auth/forgotPassword/templates/forgotPasswordEmailTemplate.ejs`;
     var html = await utils.renderHTML(path, {
         url: `${config.forgotPasswordEmailUrl}?email=${email}&token=${token}`
     });
 
-    var mailOptions = {
-        from: config.mail.username,
-        to: email,
-        subject: 'Forgot password',
-        html: html
-    };
-
-    return transporter.sendMail(mailOptions);
+    return utils.sendEmail(email, 'Forgot password', html);
 }
 
 exports.sendResetPasswordEmail = async function (req, res, next) {
@@ -62,8 +26,8 @@ exports.sendResetPasswordEmail = async function (req, res, next) {
             throw new HttpClientError(404, "The account doesn't exists");
         }
 
-        const token = await generateToken();
-        user.resetPasswordToken = await generateHash(token);
+        const token = await utils.generateToken();
+        user.resetPasswordToken = await utils.generateHash(token);
         user.resetPasswordExpires = Date.now() + (60 * 60 * 1000); //1h
         await user.save();
 
@@ -106,7 +70,7 @@ exports.resetPassword = async function (req, res, next) {
             throw new HttpClientError(403, "The token is expired");
         }
 
-        const passwordHash = await generateHash(req.body.password);
+        const passwordHash = await utils.generateHash(req.body.password);
 
         user.password = passwordHash;
         await user.save();

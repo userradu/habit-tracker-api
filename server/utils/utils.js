@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 const async = require('async');
 const ejs = require('ejs');
+const bcrypt = require('bcrypt');
+const crypto = require('crypto');
+const config = require('../config/config');
+const nodemailer = require('nodemailer');
+
 
 exports.getJoiErrorMessages = function (err) {
     return err.details.map(err => err.message);
@@ -59,4 +64,41 @@ exports.renderHTML = function(file, data) {
             }
         });
     });
-}
+};
+
+exports.generateToken = function() {
+    return new Promise((resolve, reject) => {
+        crypto.randomBytes(20, (err, buffer) => {
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve(buffer.toString('hex'));
+            }
+        });
+    })
+};
+
+exports.generateHash = function (value, saltRounds = 10) {
+    return bcrypt.hash(value, saltRounds);
+};
+
+exports.sendEmail = function(email, subject, content) {
+    var transporter = nodemailer.createTransport({
+        host: config.mail.host,
+        port: config.mail.port,
+        auth: {
+            user: config.mail.username,
+            pass: config.mail.password
+        }
+    });
+
+    var mailOptions = {
+        from: config.mail.username,
+        to: email,
+        subject: subject,
+        html: content
+    };
+
+    return transporter.sendMail(mailOptions);
+};
