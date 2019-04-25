@@ -27,7 +27,12 @@ exports.login = async function (req, res, next) {
 
         const user = await User.findOne({ email: req.body.email });
 
-        if (!user || await !bcrypt.compare(req.body.password, user.password)) {
+        if (!user) {
+            throw new HttpClientError(404, "Invalid credentials");
+        }
+
+        const passwordMatch = await bcrypt.compare(req.body.password, user.password);
+        if (!passwordMatch) {
             throw new HttpClientError(404, "Invalid credentials");
         }
 

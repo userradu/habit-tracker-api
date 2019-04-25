@@ -18,6 +18,14 @@ var UserSchema = new Schema({
 
     verificationToken: {
         type: String
+    },
+
+    resetPasswordToken: {
+        type: String
+    },
+
+    resetPasswordExpires: {
+        type: Date
     }
 });
 

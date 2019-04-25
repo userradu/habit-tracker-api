@@ -7,6 +7,7 @@ if (process.env.NODE_ENV !== 'production') {
 const config = {
   port: process.env.PORT || 3000,
   accountActivationEmail: 'www.google.com',
+  forgotPasswordEmailUrl: 'www.google.com',
   jwt_secret: process.env.JWT_SECRET
 };
 

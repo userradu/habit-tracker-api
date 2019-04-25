@@ -145,6 +145,7 @@ describe('Confirm account', () => {
                     message: 'Account verified'
                 });
                 User.findOne({ email: email }, (err, user) => {
+                    expect(user).to.not.be.null;
                     expect(user.verificationToken).to.be.null;
                     expect(user.verified).to.be.true;
                     done();

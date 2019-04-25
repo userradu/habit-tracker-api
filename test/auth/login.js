@@ -65,6 +65,35 @@ describe('Login', () => {
             });
     });
 
+    it("should throw an error if the passwords do not match", (done) => {
+        bcrypt.hash("password", 10, (err, hash) => {
+            const user = new User({
+                email: "user@email.com",
+                password: hash,
+                verificationToken: null,
+                verified: true
+            });
+
+            user.save((err, user) => {
+                request(app).post('/api/auth/login')
+                    .send({
+                        email: "user@email.com",
+                        password: "wrongPassword"
+                    })
+                    .end((err, res) => {
+                        expect(res.statusCode).to.equal(404);
+                        expect(res.body).to.eql({
+                            status: 'fail',
+                            data: {
+                                errors: ['Invalid credentials']
+                            }
+                        });
+                        done();
+                    })
+            });
+        });
+    });
+
     it('should login successfully a valid user', (done) => {
         bcrypt.hash("password", 10, (err, hash) => {
             const user = new User({
@@ -74,7 +103,7 @@ describe('Login', () => {
                 verified: true
             });
 
-            return user.save((err, user) => {
+            user.save((err, user) => {
                 request(app).post('/api/auth/login')
                     .send({
                         email: "user@email.com",
