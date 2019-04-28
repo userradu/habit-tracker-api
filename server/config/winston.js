@@ -27,18 +27,12 @@ const transports = [
     new (winston.transports.DailyRotateFile)(options.file)
 ]
 
-if (config.env !== 'test') {
+if (config.env == 'development') {
     transports.push(new winston.transports.Console(options.console))
 }
 
 const logger = winston.createLogger({
     transports: transports
 });
-
-logger.stream = {
-    write: function (message, encoding) {
-        logger.info(message);
-    }
-};
 
 module.exports = logger;
