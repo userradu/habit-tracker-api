@@ -22,6 +22,16 @@ exports.errorHandler =  function (err, req, res, next) {
         response.message = 'Something went wrong';
     }
 
-    winston.error(`${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
+    // winston.error(`${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip} - ${err.stack || e}`);
+
+    winston.error({
+        status: err.status || 500,
+        errMessage: err.message,
+        requestUrl: req.originalUrl,
+        requestMethod: req.method,
+        ip: req.ip,
+        stackTrace: err.stack || e
+    })
+
     return res.status(status).json(response)
 }

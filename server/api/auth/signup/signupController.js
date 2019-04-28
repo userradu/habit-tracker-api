@@ -30,7 +30,7 @@ exports.signup = async function (req, res, next) {
 
     try {
 
-        await Joi.validate(req.body, signupSchema, { abortEarly: false })
+        await Joi.validate(req.body, signupSchema, { abortEarly: false });
         
         const user = await User.findOne({ email: req.body.email })
 
