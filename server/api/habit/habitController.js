@@ -26,7 +26,7 @@ exports.getHabit = async function (req, res, next) {
         });
 
         if (!habit) {
-            throw new HttpClientError(404, 'The habit does not exists');
+            throw new HttpClientError(404, 'The habit does not exist');
         }
 
         return res.status(200).json({
@@ -82,7 +82,7 @@ exports.updateHabit = async function (req, res, next) {
         });
 
         if (!habit) {
-            throw new HttpClientError(404, 'The habit does not exists');
+            throw new HttpClientError(404, 'The habit does not exist');
         }
 
         habit.name = req.body.name;
@@ -116,7 +116,7 @@ exports.deleteHabit = async function (req, res, next) {
         });
 
         if (result.deletedCount == 0) {
-            throw new HttpClientError(404, 'The habit does not exists');
+            throw new HttpClientError(404, 'The habit does not exist');
         }
         
         return res.status(200).json({
