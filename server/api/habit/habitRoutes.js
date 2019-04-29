@@ -1,14 +1,16 @@
 const router = require('express').Router();
 const controller = require('./habitController');
-const { verifyToken } = require('../../middleware/authMiddleware')
+const { requireAuthentication } = require('../../middleware/authMiddleware')
+
+router.all('*', requireAuthentication);
 
 router.route('/')
-  .get(verifyToken, controller.getAllHabits)
-  .post(verifyToken, controller.createHabit);
+  .get(controller.getAllHabits)
+  .post(controller.createHabit);
 
 router.route('/:id')
-  .get(verifyToken, controller.getHabit)
-  .put(verifyToken, controller.updateHabit)
-  .delete(verifyToken, controller.deleteHabit);
+  .get(controller.getHabit)
+  .put(controller.updateHabit)
+  .delete(controller.deleteHabit);
 
 module.exports = router;

@@ -16,18 +16,18 @@ function verifyJwtToken(token) {
     });
 }
 
-exports.verifyToken = async function (req, res, next) {
+exports.requireAuthentication = async function (req, res, next) {
     try {
         if (!req.headers.authorization) {
             throw new HttpClientError(401, 'The token is required');
         }
-        else {
-            const token = req.headers.authorization.split(" ")[1];
-            const decodedToken = await verifyJwtToken(token);
-            const user = await User.findById(decodedToken._id, 'email');
-            req.user = user;
-            next();
-        }
+
+        const token = req.headers.authorization.split(" ")[1];
+        const decodedToken = await verifyJwtToken(token);
+        const user = await User.findById(decodedToken._id, 'email');
+        req.user = user;
+        next();
+
     } catch (error) {
         next(error);
     }
