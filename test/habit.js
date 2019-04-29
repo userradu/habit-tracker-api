@@ -70,10 +70,7 @@ describe("Habits", () => {
             .end((err, res) => {
                 expect(res.statusCode).to.equal(400);
                 expect(res.body).to.eql({
-                    status: 'fail',
-                    data: {
-                        errors: ['The habit name is required']
-                    }
+                    error: 'The habit name is required'
                 });
                 done();
             });
@@ -102,10 +99,7 @@ describe("Habits", () => {
             .end((err, res) => {
                 expect(res.statusCode).to.equal(404);
                 expect(res.body).to.eql({
-                    status: 'fail',
-                    data: {
-                        errors: ['The habit does not exist']
-                    }
+                    error: 'The habit does not exist'
                 });
                 done();
             });
@@ -141,10 +135,7 @@ describe("Habits", () => {
             .end((err, res) => {
                 expect(res.statusCode).to.equal(404);
                 expect(res.body).to.eql({
-                    status: 'fail',
-                    data: {
-                        errors: ['The habit does not exist']
-                    }
+                    error: 'The habit does not exist'
                 });
                 done();
             });
@@ -164,10 +155,7 @@ describe("Habits", () => {
                 .end((err, res) => {
                     expect(res.statusCode).to.equal(400);
                     expect(res.body).to.eql({
-                        status: 'fail',
-                        data: {
-                            errors: ['The habit name is required']
-                        }
+                        error: 'The habit name is required'
                     });
                     done();
                 });
@@ -203,10 +191,7 @@ describe("Habits", () => {
             .end((err, res) => {
                 expect(res.statusCode).to.equal(404);
                 expect(res.body).to.eql({
-                    status: 'fail',
-                    data: {
-                        errors: ['The habit does not exist']
-                    }
+                    error: 'The habit does not exist'
                 });
                 done();
             });

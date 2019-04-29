@@ -1,5 +1,5 @@
 const Joi = require('joi');
-const HttpClientError = require('../../exceptions/httpClientError');
+const HttpError = require('../../exceptions/httpError');
 const utils = require('../../../utils/utils');
 const { sendResetPasswordEmailSchema, resetPasswordSchema } = require('./validationSchemas');
 const User = require('../../user/userModel');
@@ -23,7 +23,7 @@ exports.sendResetPasswordEmail = async function (req, res, next) {
 
         const user = await User.findOne({ email: req.body.email });
         if (!user) {
-            throw new HttpClientError(404, "The account doesn't exists");
+            throw new HttpError(404, "The account doesn't exists");
         }
 
         const token = await utils.generateToken();
@@ -39,12 +39,7 @@ exports.sendResetPasswordEmail = async function (req, res, next) {
 
 
     } catch (error) {
-        if (error.isJoi) {
-            next(new HttpClientError(400, utils.getJoiErrorMessages(error)));
-        }
-        else {
-            next(error);
-        }
+        next(error);
     }
 };
 
@@ -56,17 +51,17 @@ exports.resetPassword = async function (req, res, next) {
         const user = await User.findOne({ email: req.body.email });
 
         if (!user) {
-            throw new HttpClientError(404, "Invalid data provided");
+            throw new HttpError(404, "Invalid data provided");
         }
 
         const tokensMatch = await bcrypt.compare(req.body.token, user.resetPasswordToken);
 
         if (!tokensMatch) {
-            throw new HttpClientError(404, "Invalid data provided");
+            throw new HttpError(404, "Invalid data provided");
         }
 
         if (user.resetPasswordExpires < Date.now()) {
-            throw new HttpClientError(403, "The token is expired");
+            throw new HttpError(403, "The token is expired");
         }
 
         const passwordHash = await utils.generateHash(req.body.password);
@@ -77,13 +72,8 @@ exports.resetPassword = async function (req, res, next) {
         return res.status(200).json({
             message: 'Password modified'
         });
-
+    
     } catch (error) {
-        if (error.isJoi) {
-            next(new HttpClientError(400, utils.getJoiErrorMessages(error)));
-        }
-        else {
-            next(error);
-        }
+        next(error);
     }
 };

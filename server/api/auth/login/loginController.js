@@ -1,6 +1,5 @@
 const Joi = require('joi');
-const HttpClientError = require('../../exceptions/httpClientError');
-const utils = require('../../../utils/utils');
+const HttpError = require('../../exceptions/httpError');
 const { loginSchema } = require('./validationSchemas');
 const User = require('../../user/userModel');
 const bcrypt = require('bcrypt');
@@ -28,12 +27,12 @@ exports.login = async function (req, res, next) {
         const user = await User.findOne({ email: req.body.email });
 
         if (!user) {
-            throw new HttpClientError(404, "Invalid credentials");
+            throw new HttpError(404, "Invalid credentials");
         }
 
         const passwordMatch = await bcrypt.compare(req.body.password, user.password);
         if (!passwordMatch) {
-            throw new HttpClientError(404, "Invalid credentials");
+            throw new HttpError(404, "Invalid credentials");
         }
 
         const token = await createJWT({_id: user._id});
@@ -43,11 +42,6 @@ exports.login = async function (req, res, next) {
         });
 
     } catch (error) {
-        if (error.isJoi) {
-            next(new HttpClientError(400, utils.getJoiErrorMessages(error)));
-        }
-        else {
-            next(error);
-        }
+        next(error);
     }
 }

@@ -19,10 +19,7 @@ describe('Forgot password', () => {
                 .end((err, res) => {
                     expect(res.statusCode).to.equal(400);
                     expect(res.body).to.eql({
-                        status: 'fail',
-                        data: {
-                            errors: ['The email is required']
-                        }
+                        error: 'The email is required'
                     });
                     done();
                 });
@@ -36,10 +33,7 @@ describe('Forgot password', () => {
                 .end((err, res) => {
                     expect(res.statusCode).to.equal(400);
                     expect(res.body).to.eql({
-                        status: 'fail',
-                        data: {
-                            errors: ['The email is not valid']
-                        }
+                        error: 'The email is not valid'
                     });
                     done();
                 });
@@ -53,10 +47,7 @@ describe('Forgot password', () => {
                 .end((err, res) => {
                     expect(res.statusCode).to.equal(404);
                     expect(res.body).to.eql({
-                        status: 'fail',
-                        data: {
-                            errors: ["The account doesn't exists"]
-                        }
+                        error: "The account doesn't exists"
                     });
                     done();
                 });
@@ -99,11 +90,8 @@ describe('Forgot password', () => {
                 .send({})
                 .end((err, res) => {
                     expect(res.statusCode).to.equal(400);
-                    expect(res.body).to.have.property('status');
-                    expect(res.body.status).to.equal('fail');
-                    expect(res.body).to.have.property('data');
-                    expect(res.body.data).to.have.property('errors');
-                    expect(res.body.data.errors).to.have.members([
+                    expect(res.body).to.have.property('error');
+                    expect(res.body.error).to.have.members([
                         'The email is required',
                         'The password is required',
                         'The confirm password field is required',
@@ -124,10 +112,7 @@ describe('Forgot password', () => {
                 .end((err, res) => {
                     expect(res.statusCode).to.equal(400);
                     expect(res.body).to.eql({
-                        status: 'fail',
-                        data: {
-                            errors: ['The email is not valid']
-                        }
+                        error: 'The email is not valid'
                     });
                     done();
                 })
@@ -144,10 +129,7 @@ describe('Forgot password', () => {
                 .end((err, res) => {
                     expect(res.statusCode).to.equal(404);
                     expect(res.body).to.eql({
-                        status: 'fail',
-                        data: {
-                            errors: ["Invalid data provided"]
-                        }
+                        error: "Invalid data provided"
                     });
                     done();
                 });
@@ -173,10 +155,7 @@ describe('Forgot password', () => {
                     .end((err, res) => {
                         expect(res.statusCode).to.equal(404);
                         expect(res.body).to.eql({
-                            status: 'fail',
-                            data: {
-                                errors: ["Invalid data provided"]
-                            }
+                            error: "Invalid data provided"
                         });
                         done();
                     });
@@ -202,10 +181,7 @@ describe('Forgot password', () => {
                     .end((err, res) => {
                         expect(res.statusCode).to.equal(403);
                         expect(res.body).to.eql({
-                            status: 'fail',
-                            data: {
-                                errors: ["The token is expired"]
-                            }
+                            error: "The token is expired"
                         });
                         done();
                     });

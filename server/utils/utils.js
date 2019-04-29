@@ -8,6 +8,9 @@ const nodemailer = require('nodemailer');
 
 
 exports.getJoiErrorMessages = function (err) {
+    if (err.details.length == 1) {
+        return err.details[0].message;
+    }
     return err.details.map(err => err.message);
 };
 

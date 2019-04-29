@@ -17,11 +17,8 @@ describe('Login', () => {
             .send({})
             .end((err, res) => {
                 expect(res.statusCode).to.equal(400);
-                expect(res.body).to.have.property('status');
-                expect(res.body.status).to.equal('fail');
-                expect(res.body).to.have.property('data');
-                expect(res.body.data).to.have.property('errors');
-                expect(res.body.data.errors).to.have.members([
+                expect(res.body).to.have.property('error');
+                expect(res.body.error).to.have.members([
                     'The email is required',
                     'The password is required'
                 ]);
@@ -38,10 +35,7 @@ describe('Login', () => {
             .end((err, res) => {
                 expect(res.statusCode).to.equal(400);
                 expect(res.body).to.eql({
-                    status: 'fail',
-                    data: {
-                        errors: ['The email is not valid']
-                    }
+                    error: 'The email is not valid'
                 });
                 done();
             });
@@ -56,10 +50,7 @@ describe('Login', () => {
             .end((err, res) => {
                 expect(res.statusCode).to.equal(404);
                 expect(res.body).to.eql({
-                    status: 'fail',
-                    data: {
-                        errors: ['Invalid credentials']
-                    }
+                    error: 'Invalid credentials'
                 });
                 done();
             });
@@ -83,10 +74,7 @@ describe('Login', () => {
                     .end((err, res) => {
                         expect(res.statusCode).to.equal(404);
                         expect(res.body).to.eql({
-                            status: 'fail',
-                            data: {
-                                errors: ['Invalid credentials']
-                            }
+                            error: 'Invalid credentials'
                         });
                         done();
                     })

@@ -1,4 +1,4 @@
-class HttpClientError extends Error {
+class HttpError extends Error {
 
     constructor(status, message) {
         super(message);
@@ -10,4 +10,4 @@ class HttpClientError extends Error {
 
 }
 
-module.exports = HttpClientError;
+module.exports = HttpError;

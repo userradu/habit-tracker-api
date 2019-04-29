@@ -1,4 +1,4 @@
-const HttpClientError = require('../api/exceptions/httpClientError');
+const HttpError = require('../api/exceptions/httpError');
 const jwt = require('jsonwebtoken');
 const config = require('../config/config');
 const User = require('../api/user/userModel');
@@ -7,7 +7,7 @@ function verifyJwtToken(token) {
     return new Promise((resolve, reject) => {
         jwt.verify(token, config.jwt_secret, (err, decoded) => {
             if (err) {
-                reject(new HttpClientError(401, 'Invalid token'));
+                reject(new HttpError(401, 'Invalid token'));
             }
             else {
                 resolve(decoded);
@@ -19,7 +19,7 @@ function verifyJwtToken(token) {
 exports.requireAuthentication = async function (req, res, next) {
     try {
         if (!req.headers.authorization) {
-            throw new HttpClientError(401, 'The token is required');
+            throw new HttpError(401, 'The token is required');
         }
 
         const token = req.headers.authorization.split(" ")[1];

@@ -29,11 +29,8 @@ describe('Signup', () => {
             .send({})
             .end((err, res) => {
                 expect(res.statusCode).to.equal(400);
-                expect(res.body).to.have.property('status');
-                expect(res.body.status).to.equal('fail');
-                expect(res.body).to.have.property('data');
-                expect(res.body.data).to.have.property('errors');
-                expect(res.body.data.errors).to.have.members([
+                expect(res.body).to.have.property('error');
+                expect(res.body.error).to.have.members([
                     'The email is required',
                     'The password is required',
                     'The confirm password field is required'
@@ -52,10 +49,7 @@ describe('Signup', () => {
             .end((err, res) => {
                 expect(res.statusCode).to.equal(400);
                 expect(res.body).to.eql({
-                    status: 'fail',
-                    data: {
-                        errors: ['The email is not valid']
-                    }
+                    error: 'The email is not valid'
                 });
                 done();
             })
@@ -79,10 +73,7 @@ describe('Signup', () => {
             .end((err, res) => {
                 expect(res.statusCode).to.equal(409);
                 expect(res.body).to.eql({
-                    status: 'fail',
-                    data: {
-                        errors: ['The email is taken']
-                    }
+                    error: 'The email is taken'
                 });
                 done();
             })
@@ -99,10 +90,7 @@ describe('Signup', () => {
             .end((err, res) => {
                 expect(res.statusCode).to.equal(400);
                 expect(res.body).to.eql({
-                    status: 'fail',
-                    data: {
-                        errors: ['Password and confirm password do not match']
-                    }
+                    error: 'Password and confirm password do not match'
                 });
                 done();
             })
@@ -151,10 +139,7 @@ describe('Confirm account', () => {
             .end((err, res) => {
                 expect(res.statusCode).to.equal(400);
                 expect(res.body).to.eql({
-                    status: 'fail',
-                    data: {
-                        errors: ['The verification token is required']
-                    }
+                    error: 'The verification token is required'
                 });
                 done();
             })
@@ -168,10 +153,7 @@ describe('Confirm account', () => {
             .end((err, res) => {
                 expect(res.statusCode).to.equal(404);
                 expect(res.body).to.eql({
-                    status: 'fail',
-                    data: {
-                        errors: ["The account doesn't exists"]
-                    }
+                    error: "The account doesn't exists"
                 });
                 done();
             })

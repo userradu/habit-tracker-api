@@ -1,8 +1,7 @@
 const Habit = require('./habitModel');
 const Joi = require('joi');
 const { habitSchema } = require('./validationSchemas');
-const HttpClientError = require('../exceptions/httpClientError');
-const utils = require('../../utils/utils');
+const HttpError = require('../exceptions/httpError');
 
 exports.getAllHabits = async function (req, res, next) {
     try {
@@ -23,7 +22,7 @@ exports.getHabit = async function (req, res, next) {
         });
 
         if (!habit) {
-            throw new HttpClientError(404, 'The habit does not exist');
+            throw new HttpError(404, 'The habit does not exist');
         }
 
         return res.status(200).json({
@@ -50,12 +49,7 @@ exports.createHabit = async function (req, res, next) {
             name: habit.name
         });
     } catch (error) {
-        if (error.isJoi) {
-            next(new HttpClientError(400, utils.getJoiErrorMessages(error)));
-        }
-        else {
-            next(error);
-        }
+        next(error);
     }
 };
 
@@ -69,7 +63,7 @@ exports.updateHabit = async function (req, res, next) {
         });
 
         if (!habit) {
-            throw new HttpClientError(404, 'The habit does not exist');
+            throw new HttpError(404, 'The habit does not exist');
         }
 
         habit.name = req.body.name;
@@ -80,12 +74,7 @@ exports.updateHabit = async function (req, res, next) {
             name: habit.name
         });
     } catch (error) {
-        if (error.isJoi) {
-            next(new HttpClientError(400, utils.getJoiErrorMessages(error)));
-        }
-        else {
-            next(error);
-        }
+        next(error);
     }
 };
 
@@ -98,7 +87,7 @@ exports.deleteHabit = async function (req, res, next) {
         });
 
         if (result.deletedCount == 0) {
-            throw new HttpClientError(404, 'The habit does not exist');
+            throw new HttpError(404, 'The habit does not exist');
         }
 
         return res.status(200).json({
