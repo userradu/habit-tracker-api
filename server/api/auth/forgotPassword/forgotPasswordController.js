@@ -34,7 +34,6 @@ exports.sendResetPasswordEmail = async function (req, res, next) {
         await sendEmail(req.body.email, token);
 
         return res.status(200).json({
-            status: 'success',
             message: 'Email sent'
         });
 
@@ -76,7 +75,6 @@ exports.resetPassword = async function (req, res, next) {
         await user.save();
 
         return res.status(200).json({
-            status: 'success',
             message: 'Password modified'
         });
 

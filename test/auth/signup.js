@@ -20,10 +20,6 @@ describe('Signup', () => {
             })
             .end((err, res) => {
                 expect(res.statusCode).to.equal(201);
-                expect(res.body).to.eql({
-                    status: 'success',
-                    message: 'Account created'
-                });
                 done();
             })
     });
@@ -140,10 +136,6 @@ describe('Confirm account', () => {
             })
             .end((err, res) => {
                 expect(res.statusCode).to.equal(200);
-                expect(res.body).to.eql({
-                    status: 'success',
-                    message: 'Account verified'
-                });
                 User.findOne({ email: email }, (err, user) => {
                     expect(user).to.not.be.null;
                     expect(user.verificationToken).to.be.null;

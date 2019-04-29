@@ -39,10 +39,7 @@ exports.login = async function (req, res, next) {
         const token = await createJWT({_id: user._id});
 
         return res.status(200).json({
-            status: 'success',
-            data: {
-                token: token
-            }
+            token: token
         });
 
     } catch (error) {

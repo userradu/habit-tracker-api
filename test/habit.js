@@ -35,7 +35,7 @@ describe("Habits", () => {
                         .post('/api/auth/login')
                         .send(userDetails)
                         .end((err, res) => {
-                            token = res.body.data.token;
+                            token = res.body.token;
                             decoded = jwt.verify(token, config.jwt_secret);
                             userId = decoded._id;
                             done();
@@ -56,11 +56,8 @@ describe("Habits", () => {
             .set('Authorization', `Bearer ${token}`)
             .end((err, res) => {
                 expect(res.statusCode).to.equal(200);
-                expect(res.body).to.have.property('status');
-                expect(res.body.status).to.equal('success');
-                expect(res.body).to.have.property('data');
-                expect(res.body.data).to.have.property('habits');
-                expect(res.body.data.habits).to.be.an('array');
+                expect(res.body).to.have.property('habits');
+                expect(res.body.habits).to.be.an('array');
                 done();
             });
     });
@@ -91,10 +88,8 @@ describe("Habits", () => {
             })
             .end((err, res) => {
                 expect(res.statusCode).to.equal(201);
-                expect(res.body).to.have.property('status');
-                expect(res.body.status).to.equal('success');
-                expect(res.body).to.have.property('data');
-                expect(res.body.data).to.have.property('habit');
+                expect(res.body).to.have.property('_id');
+                expect(res.body).to.have.property('name');
                 done();
             });
     });
@@ -128,11 +123,8 @@ describe("Habits", () => {
                 .set('Authorization', `Bearer ${token}`)
                 .end((err, res) => {
                     expect(res.statusCode).to.equal(200);
-                    expect(res.body).to.have.property('status');
-                    expect(res.body.status).to.equal('success');
-                    expect(res.body).to.have.property('data');
-                    expect(res.body.data).to.have.property('habit');
-                    expect(habit._id.equals(res.body.data.habit._id)).to.be.true;
+                    expect(res.body).to.have.property('_id');
+                    expect(res.body).to.have.property('name');
                     done();
                 });
         });
@@ -197,11 +189,7 @@ describe("Habits", () => {
                 })
                 .end((err, res) => {
                     expect(res.statusCode).to.equal(200);
-                    expect(res.body).to.have.property('status');
-                    expect(res.body.status).to.equal('success');
-                    expect(res.body).to.have.property('data');
-                    expect(res.body.data).to.have.property('habit');
-                    expect(res.body.data.habit.name).to.equal("habitNameModified");
+                    expect(res.body.name).to.equal("habitNameModified");
                     done();
                 });
         });
@@ -236,13 +224,8 @@ describe("Habits", () => {
                 .set('Authorization', `Bearer ${token}`)
                 .end((err, res) => {
                     expect(res.statusCode).to.equal(200);
-                    expect(res.body).to.have.property('status');
-                    expect(res.body.status).to.equal('success');
-                    expect(res.body).to.have.property('message');
-                    expect(res.body.message).to.equal("The habit was deleted");
                     done();
                 });
         });
     });
-
 });

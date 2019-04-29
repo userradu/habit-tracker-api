@@ -8,10 +8,7 @@ exports.getAllHabits = async function (req, res, next) {
     try {
         const habits = await Habit.find({ user: req.user._id }, 'name');
         return res.status(200).json({
-            status: 'success',
-            data: {
-                habits: habits
-            }
+            habits: habits
         });
     } catch (error) {
         next(error);
@@ -30,13 +27,8 @@ exports.getHabit = async function (req, res, next) {
         }
 
         return res.status(200).json({
-            status: 'success',
-            data: {
-                habit: {
-                    _id: habit.id,
-                    name: habit.name
-                }
-            }
+            _id: habit.id,
+            name: habit.name
         });
     } catch (error) {
         next(error);
@@ -54,13 +46,8 @@ exports.createHabit = async function (req, res, next) {
         await habit.save();
 
         return res.status(201).json({
-            status: 'success',
-            data: {
-                habit: {
-                    _id: habit.id,
-                    name: habit.name
-                }
-            }
+            _id: habit.id,
+            name: habit.name
         });
     } catch (error) {
         if (error.isJoi) {
@@ -89,13 +76,8 @@ exports.updateHabit = async function (req, res, next) {
         await habit.save();
 
         return res.status(200).json({
-            status: 'success',
-            data: {
-                habit: {
-                    _id: habit.id,
-                    name: habit.name
-                }
-            }
+            _id: habit.id,
+            name: habit.name
         });
     } catch (error) {
         if (error.isJoi) {
@@ -118,9 +100,8 @@ exports.deleteHabit = async function (req, res, next) {
         if (result.deletedCount == 0) {
             throw new HttpClientError(404, 'The habit does not exist');
         }
-        
+
         return res.status(200).json({
-            status: "success",
             message: "The habit was deleted"
         });
 

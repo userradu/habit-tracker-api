@@ -111,8 +111,7 @@ describe('Login', () => {
                     })
                     .end((err, res) => {
                         expect(res.statusCode).to.equal(200);
-                        expect(res.body).to.have.property('data');
-                        expect(res.body.data).to.have.property('token');
+                        expect(res.body).to.have.property('token');
                         done();
                     })
             });

@@ -44,7 +44,6 @@ exports.signup = async function (req, res, next) {
         await sendAccountConfirmationEmail(req.body.email, activationToken);
 
         return res.status(201).json({
-            status: 'success',
             message: 'Account created'
         });
 
@@ -74,7 +73,6 @@ exports.verifyAccount = async function (req, res, next) {
         await user.save();
 
         return res.json({
-            status: 'success',
             message: 'Account verified'
         });
     } catch (error) {

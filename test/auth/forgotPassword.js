@@ -77,10 +77,6 @@ describe('Forgot password', () => {
                     })
                     .end((err, res) => {
                         expect(res.statusCode).to.equal(200);
-                        expect(res.body).to.eql({
-                            status: 'success',
-                            message: 'Email sent'
-                        });
 
                         User.findOne({ email: email }, (err, user) => {
                             expect(user.resetPasswordToken).to.not.be.null;
@@ -211,6 +207,29 @@ describe('Forgot password', () => {
                                 errors: ["The token is expired"]
                             }
                         });
+                        done();
+                    });
+            });
+        });
+
+        it('should reset the password', (done) => {
+            const user = new User({
+                email: "user@email.com",
+                password: "password",
+                resetPasswordToken: "$2b$10$YemzTttRt0npnLK/pUJeWu3EhTpWNrkZyAjbZZBbTjQnUjpaTqviK",
+                resetPasswordExpires: Date.now() + (60 * 60 * 1000)
+            });
+
+            user.save((err, user) => {
+                request(app).post('/api/auth/forgot-password/reset')
+                    .send({
+                        email: "user@email.com",
+                        password: "password",
+                        confirm_password: "password",
+                        token: "6bc791b1a5bc402c4013e1a49d13098b4a5dd33f"
+                    })
+                    .end((err, res) => {
+                        expect(res.statusCode).to.equal(200);
                         done();
                     });
             });
