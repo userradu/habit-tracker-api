@@ -40,6 +40,12 @@ exports.createHabit = async function (req, res, next) {
         
         await Joi.validate(req.body, habitSchema, { abortEarly: false });
 
+        const existingHabit = await Habit.findOne({ user: req.user._id, name: req.body.name });
+        
+        if (existingHabit) {
+            throw new HttpError(409, "The habit already exists");
+        }
+
         const habit = new Habit({
             user: req.user._id,
             name: req.body.name
@@ -58,6 +64,16 @@ exports.createHabit = async function (req, res, next) {
 exports.updateHabit = async function (req, res, next) {
     try {
         await Joi.validate(req.body, habitSchema, { abortEarly: false });
+
+        const nameTaken = await Habit.findOne({
+            user: req.user._id,
+            _id: { $ne: req.params.id },
+            name: req.body.name
+        });
+
+        if (nameTaken) {
+            throw new HttpError(409, 'The habit name is taken');
+        }
 
         const habit = await Habit.findOne({
             user: req.user._id,

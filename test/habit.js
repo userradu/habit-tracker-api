@@ -76,6 +76,27 @@ describe("Habits", () => {
             });
     });
 
+    it('should not create a habit if the name is taken', (done) => {
+        const habit = new Habit({
+            name: 'habit',
+            user: userId
+        });
+
+        habit.save(() => {
+            request(app)
+                .post('/api/habits')
+                .set('Authorization', `Bearer ${token}`)
+                .send({ name: 'habit' })
+                .end((err, res) => {
+                    expect(res.statusCode).to.equal(409);
+                    expect(res.body).to.eql({
+                        error: 'The habit already exists'
+                    });
+                    done();
+                });
+        });
+    });
+
     it('should create a habit', (done) => {
         request(app)
             .post('/api/habits')
@@ -141,7 +162,7 @@ describe("Habits", () => {
             });
     });
 
-    it("should throw an error if the name is missing when trying to update", (done) => {
+    it("should throw an error if the name is missing when trying to update a habit", (done) => {
         const habit = new Habit({
             name: 'habit',
             user: userId
@@ -162,6 +183,35 @@ describe("Habits", () => {
         });
     });
 
+    it("should throw an error if the name is taken when trying to update a habit", (done) => {
+        const habits = [
+            {
+                name: 'read',
+                user: userId
+            },
+            {
+                name: 'exercise more',
+                user: userId
+            }
+        ];
+
+        Habit.create(habits, (err, habits) => {
+            request(app)
+                .put(`/api/habits/${habits[0]._id}`)
+                .set('Authorization', `Bearer ${token}`)
+                .send({
+                    name: 'exercise more'
+                })
+                .end((err, res) => {
+                    expect(res.statusCode).to.equal(409);
+                    expect(res.body).to.eql({
+                        error: 'The habit name is taken'
+                    });
+                    done();
+                });
+        })
+    });
+
     it("should update a habit", (done) => {
         const habit = new Habit({
             name: 'habit',
@@ -178,6 +228,27 @@ describe("Habits", () => {
                 .end((err, res) => {
                     expect(res.statusCode).to.equal(200);
                     expect(res.body.name).to.equal("habitNameModified");
+                    done();
+                });
+        });
+    });
+
+    it("should update a habit (same name)", (done) => {
+        const habit = new Habit({
+            name: 'habit',
+            user: userId
+        });
+
+        habit.save(() => {
+            request(app)
+                .put(`/api/habits/${habit._id}`)
+                .set('Authorization', `Bearer ${token}`)
+                .send({
+                    name: 'habit'
+                })
+                .end((err, res) => {
+                    expect(res.statusCode).to.equal(200);
+                    expect(res.body.name).to.equal("habit");
                     done();
                 });
         });
