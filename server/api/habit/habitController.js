@@ -2,6 +2,7 @@ const Habit = require('./habitModel');
 const Joi = require('joi');
 const { habitSchema } = require('./validationSchemas');
 const HttpError = require('../exceptions/httpError');
+const History = require('../history/historyModel');
 
 exports.getAllHabits = async function (req, res, next) {
     try {
@@ -107,6 +108,10 @@ exports.deleteHabit = async function (req, res, next) {
         if (result.deletedCount == 0) {
             throw new HttpError(404, 'The habit does not exist');
         }
+
+        await History.deleteMany({
+            habit: req.params.id
+        });
 
         return res.status(200).json({
             message: "The habit was deleted"

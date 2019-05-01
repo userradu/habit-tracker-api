@@ -6,6 +6,7 @@ const Habit = require('../server/api/habit/habitModel');
 const jwt = require('jsonwebtoken');
 const config = require('../server/config/config');
 const mongoose = require('mongoose');
+const History = require('../server/api/history/historyModel');
 
 const app = require('../server/server');
 
@@ -268,20 +269,40 @@ describe("Habits", () => {
             });
     });
 
-    it("should delete a habit", (done) => {
+    it("should delete a habit and its associated history", (done) => {
         const habit = new Habit({
             name: 'habit',
             user: userId
         });
 
-        habit.save(() => {
-            request(app)
-                .delete(`/api/habits/${habit._id}`)
-                .set('Authorization', `Bearer ${token}`)
-                .end((err, res) => {
-                    expect(res.statusCode).to.equal(200);
-                    done();
-                });
-        });
+        habit.save()
+            .then(() => {
+                const arr = [
+                    {
+                        habit: habit._id,
+                        date: "2019-04-01T00:00:00.000Z",
+                    },
+                    {
+                        habit: habit._id,
+                        date: "2019-05-01T00:00:00.000Z",
+                    }
+                ];
+
+                return History.create(arr);
+            })
+            .then(() => {
+                request(app)
+                    .delete(`/api/habits/${habit._id}`)
+                    .set('Authorization', `Bearer ${token}`)
+                    .end((err, res) => {
+                        expect(res.statusCode).to.equal(200);
+                        expect(res.body).to.have.property('message');
+                        expect(res.body.message).to.equal('The habit was deleted');
+                        History.find({habit: habit._id}, (err, res) => {
+                            expect(res.length).to.equal(0);
+                            done();
+                        });
+                    });
+            });
     });
 });
