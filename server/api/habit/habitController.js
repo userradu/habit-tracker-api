@@ -9,6 +9,7 @@ exports.getAllHabits = async function (req, res, next) {
         return res.status(200).json({
             habits: habits
         });
+
     } catch (error) {
         next(error);
     }
@@ -36,6 +37,7 @@ exports.getHabit = async function (req, res, next) {
 
 exports.createHabit = async function (req, res, next) {
     try {
+        
         await Joi.validate(req.body, habitSchema, { abortEarly: false });
 
         const habit = new Habit({
