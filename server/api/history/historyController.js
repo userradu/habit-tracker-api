@@ -6,10 +6,18 @@ const { historySchema } = require('./validationSchemas');
 exports.getHistory = async function (req, res, next) {
     try {
 
-        const history = await History.find({ habit: req.params.habitId }, 'date');
+        const query = { habit: req.params.habitId };
+
+        if (req.query.year && req.query.month) {
+            const startDate = new Date(req.query.year, req.query.month - 1);
+            const endDate = new Date(startDate.getUTCFullYear(), startDate.getMonth() + 1, 0);
+            query.date = { $gte: startDate, $lte: endDate };
+        }
+
+        const history = await History.find(query, 'date');
         return res.status(200).json({
             history: history
-        })
+        });
 
     } catch (error) {
         next(error);
