@@ -10,7 +10,7 @@ exports.getHistory = async function (req, res, next) {
 
         if (req.query.year && req.query.month) {
             const startDate = new Date(req.query.year, req.query.month - 1);
-            const endDate = new Date(startDate.getUTCFullYear(), startDate.getMonth() + 1, 0);
+            const endDate = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0);
             query.date = { $gte: startDate, $lte: endDate };
         }
 
@@ -37,7 +37,6 @@ exports.addDay = async function (req, res, next) {
         await history.save();
 
         return res.status(201).json({
-            _id: history.id,
             date: history.date
         });
 
@@ -49,10 +48,8 @@ exports.addDay = async function (req, res, next) {
 exports.removeDay = async function (req, res, next) {
     try {
 
-        await Joi.validate(req.body, historySchema, { abortEarly: false });
-
         const result = await History.deleteOne({
-            date: req.body.date,
+            date: req.params.date,
             habit: req.params.habitId
         });
 

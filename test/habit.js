@@ -48,7 +48,7 @@ describe("Habits", () => {
         Habit.deleteMany({}, () => {
             done();
         });
-    })
+    });
 
     it('should get all the habits', (done) => {
         request(app)

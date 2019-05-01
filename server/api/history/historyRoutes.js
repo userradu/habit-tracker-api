@@ -6,7 +6,8 @@ router.all('*', requireAuthentication);
 
 router.route('/:habitId')
   .get(controller.getHistory)
-  .post(controller.addDay)
-  .delete(controller.removeDay);
+  .post(controller.addDay);
+
+router.delete('/:habitId/:date', controller.removeDay)
 
 module.exports = router;
