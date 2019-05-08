@@ -16,7 +16,7 @@ describe('Signup', () => {
             .send({
                 email: "user@email.com",
                 password: "password",
-                confirm_password: "password"
+                confirmPassword: "password"
             })
             .end((err, res) => {
                 expect(res.statusCode).to.equal(201);
@@ -44,7 +44,7 @@ describe('Signup', () => {
             .send({
                 email: "invalidEmail",
                 password: "password",
-                confirm_password: "password"
+                confirmPassword: "password"
             })
             .end((err, res) => {
                 expect(res.statusCode).to.equal(400);
@@ -68,7 +68,7 @@ describe('Signup', () => {
             .send({
                 email: "user@email.com",
                 password: "password",
-                confirm_password: "password"
+                confirmPassword: "password"
             })
             .end((err, res) => {
                 expect(res.statusCode).to.equal(409);
@@ -85,7 +85,7 @@ describe('Signup', () => {
             .send({
                 email: "user@email.com",
                 password: "password",
-                confirm_password: "another password"
+                confirmPassword: "another password"
             })
             .end((err, res) => {
                 expect(res.statusCode).to.equal(400);

@@ -18,7 +18,7 @@ exports.signupSchema = Joi.object().keys({
             message: "The password is required" 
         }
     ])),
-    confirm_password: Joi.any().valid(Joi.ref('password')).required().error(errors => utils.setErrorMessages(errors, [
+    confirmPassword: Joi.any().valid(Joi.ref('password')).required().error(errors => utils.setErrorMessages(errors, [
         {
             errType: "any.required",
             message: "The confirm password field is required"
