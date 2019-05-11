@@ -1,4 +1,5 @@
 module.exports = {
+    accountActivationPageUrl: process.env.ACCOUNT_ACTIVATION_PAGE_URL,
     dbUrl: process.env.DB_URL,
     mail: {
         host: process.env.MAIL_HOST,

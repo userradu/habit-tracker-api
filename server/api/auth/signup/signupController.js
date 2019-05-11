@@ -19,7 +19,7 @@ function createAccount(email, password, token) {
 
 async function sendAccountConfirmationEmail(email, token) {
     var html = await utils.renderHTML(`${appRoot}/server/api/auth/signup/templates/verifyEmailTemplate.ejs`, {
-        url: `${config.accountActivationEmail}?token=${token}`
+        url: `${config.accountActivationPageUrl}/${token}`
     });
 
     return utils.sendEmail(email, 'Confirm account', html);
