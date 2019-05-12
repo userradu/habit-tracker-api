@@ -1,7 +1,7 @@
 const Joi = require('joi');
 const utils = require('../../utils/utils');
 
-exports.checkEmailNotTakenSchema = Joi.object().keys({
+exports.checkEmailExistsSchema = Joi.object().keys({
     email: Joi.string().email().required().error(errors => utils.setErrorMessages(errors, [
         { 
             errType: "any.required", 
