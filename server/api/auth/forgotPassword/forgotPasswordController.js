@@ -10,7 +10,7 @@ const appRoot = require('app-root-path');
 async function sendEmail(email, token) {
     const path = `${appRoot}/server/api/auth/forgotPassword/templates/forgotPasswordEmailTemplate.ejs`;
     var html = await utils.renderHTML(path, {
-        url: `${config.forgotPasswordEmailUrl}?email=${email}&token=${token}`
+        url: `${config.resetPasswordUrl}?email=${email}&token=${token}`
     });
 
     return utils.sendEmail(email, 'Forgot password', html);

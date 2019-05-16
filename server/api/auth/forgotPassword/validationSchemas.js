@@ -40,7 +40,7 @@ exports.resetPasswordSchema = Joi.object().keys({
         }
     ])),
 
-    confirm_password: Joi.any().valid(Joi.ref('password')).required().error(errors => utils.setErrorMessages(errors, [
+    confirmPassword: Joi.any().valid(Joi.ref('password')).required().error(errors => utils.setErrorMessages(errors, [
         {
             errType: "any.required",
             message: "The confirm password field is required"
