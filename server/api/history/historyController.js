@@ -8,10 +8,16 @@ exports.getHistory = async function (req, res, next) {
 
         const query = { habit: req.params.habitId };
 
-        if (req.query.year && req.query.month) {
-            const startDate = new Date(req.query.year, req.query.month - 1);
-            const endDate = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0);
-            query.date = { $gte: startDate, $lte: endDate };
+        if (req.query.startDate || req.query.endDate) {
+            query.date = {};
+
+            if (req.query.startDate) {
+                query.date.$gte =  req.query.startDate ;
+            }
+    
+            if (req.query.endDate) {
+                query.date.$lte = req.query.endDate;
+            }
         }
 
         const history = await History.find(query, 'date');

@@ -72,22 +72,55 @@ describe('History', () => {
             });
     });
 
-    it('should get the history for a habit filtered by year and month', (done) => {
+    it('should get the history for a habit filtered by start date and end date (all dates in range)', (done) => {
 
         const arr = [
             {
                 habit: habitId,
-                date: "2019-05-01T00:00:00.000Z"
+                date: "2019-04-01T00:00:00.000Z"
             },
             {
                 habit: habitId,
-                date: "2019-04-01T00:00:00.000Z"
+                date: "2019-05-01T00:00:00.000Z"
             }
         ];
 
+        const startDate = "2019-04-01T00:00:00.000Z";
+        const endDate = "2019-05-01T00:00:00.000Z";
+
         History.create(arr, () => {
             request(app)
-                .get(`/api/history/${habitId}?year=2019&month=4`)
+                .get(`/api/history/${habitId}?startDate=${startDate}&endDate=${endDate}`)
+                .set('Authorization', `Bearer ${token}`)
+                .end((err, res) => {
+                    expect(res.statusCode).to.equal(200);
+                    expect(res.body).to.have.property('history');
+                    expect(res.body.history).to.be.an('array');
+                    expect(res.body.history.length).to.equal(2);
+                    done();
+                });
+        });
+    });
+
+    it('should get the history for a habit filtered by start date and end date (one date in range)', (done) => {
+
+        const arr = [
+            {
+                habit: habitId,
+                date: "2019-04-01T00:00:00.000Z"
+            },
+            {
+                habit: habitId,
+                date: "2019-06-01T00:00:00.000Z"
+            }
+        ];
+
+        const startDate = "2019-04-01T00:00:00.000Z";
+        const endDate = "2019-05-01T00:00:00.000Z";
+
+        History.create(arr, () => {
+            request(app)
+                .get(`/api/history/${habitId}?startDate=${startDate}&endDate=${endDate}`)
                 .set('Authorization', `Bearer ${token}`)
                 .end((err, res) => {
                     expect(res.statusCode).to.equal(200);
@@ -98,6 +131,153 @@ describe('History', () => {
                 });
         });
     });
+
+    it('should get the history for a habit filtered by start date and end date (no dates in range)', (done) => {
+
+        const arr = [
+            {
+                habit: habitId,
+                date: "2019-04-01T00:00:00.000Z"
+            },
+            {
+                habit: habitId,
+                date: "2019-06-01T00:00:00.000Z"
+            }
+        ];
+
+        const startDate = "2019-01-01T00:00:00.000Z";
+        const endDate = "2019-02-01T00:00:00.000Z";
+
+        History.create(arr, () => {
+            request(app)
+                .get(`/api/history/${habitId}?startDate=${startDate}&endDate=${endDate}`)
+                .set('Authorization', `Bearer ${token}`)
+                .end((err, res) => {
+                    expect(res.statusCode).to.equal(200);
+                    expect(res.body).to.have.property('history');
+                    expect(res.body.history).to.be.an('array');
+                    expect(res.body.history.length).to.equal(0);
+                    done();
+                });
+        });
+    });
+
+    it('should get the history for a habit filtered by start date', (done) => {
+
+        const arr = [
+            {
+                habit: habitId,
+                date: "2019-04-01T00:00:00.000Z"
+            },
+            {
+                habit: habitId,
+                date: "2019-06-01T00:00:00.000Z"
+            }
+        ];
+
+        const startDate = "2019-05-01T00:00:00.000Z";
+
+        History.create(arr, () => {
+            request(app)
+                .get(`/api/history/${habitId}?startDate=${startDate}`)
+                .set('Authorization', `Bearer ${token}`)
+                .end((err, res) => {
+                    expect(res.statusCode).to.equal(200);
+                    expect(res.body).to.have.property('history');
+                    expect(res.body.history).to.be.an('array');
+                    expect(res.body.history.length).to.equal(1);
+                    done();
+                });
+        });
+    });
+
+    it('should get the history for a habit filtered by start date (no dates in range)', (done) => {
+
+        const arr = [
+            {
+                habit: habitId,
+                date: "2019-04-01T00:00:00.000Z"
+            },
+            {
+                habit: habitId,
+                date: "2019-06-01T00:00:00.000Z"
+            }
+        ];
+
+        const startDate = "2019-07-01T00:00:00.000Z";
+
+        History.create(arr, () => {
+            request(app)
+                .get(`/api/history/${habitId}?startDate=${startDate}`)
+                .set('Authorization', `Bearer ${token}`)
+                .end((err, res) => {
+                    expect(res.statusCode).to.equal(200);
+                    expect(res.body).to.have.property('history');
+                    expect(res.body.history).to.be.an('array');
+                    expect(res.body.history.length).to.equal(0);
+                    done();
+                });
+        });
+    });
+
+    it('should get the history for a habit filtered by end date', (done) => {
+
+        const arr = [
+            {
+                habit: habitId,
+                date: "2019-04-01T00:00:00.000Z"
+            },
+            {
+                habit: habitId,
+                date: "2019-06-01T00:00:00.000Z"
+            }
+        ];
+
+        const endDate = "2019-04-10T00:00:00.000Z";
+
+        History.create(arr, () => {
+            request(app)
+                .get(`/api/history/${habitId}?endDate=${endDate}`)
+                .set('Authorization', `Bearer ${token}`)
+                .end((err, res) => {
+                    expect(res.statusCode).to.equal(200);
+                    expect(res.body).to.have.property('history');
+                    expect(res.body.history).to.be.an('array');
+                    expect(res.body.history.length).to.equal(1);
+                    done();
+                });
+        });
+    });
+
+    it('should get the history for a habit filtered by end date (no dates in range)', (done) => {
+
+        const arr = [
+            {
+                habit: habitId,
+                date: "2019-04-01T00:00:00.000Z"
+            },
+            {
+                habit: habitId,
+                date: "2019-06-01T00:00:00.000Z"
+            }
+        ];
+
+        const endDate = "2019-03-10T00:00:00.000Z";
+
+        History.create(arr, () => {
+            request(app)
+                .get(`/api/history/${habitId}?endDate=${endDate}`)
+                .set('Authorization', `Bearer ${token}`)
+                .end((err, res) => {
+                    expect(res.statusCode).to.equal(200);
+                    expect(res.body).to.have.property('history');
+                    expect(res.body.history).to.be.an('array');
+                    expect(res.body.history.length).to.equal(0);
+                    done();
+                });
+        });
+    });
+
 
     it('should add a completed date', (done) => {
 
