@@ -8,7 +8,7 @@ const config = require('../../../config/config');
 
 function createJWT(payload) {
     return new Promise((resolve, reject) => {
-        jwt.sign(payload, config.jwt_secret, { expiresIn: '1d' }, (err, token) => {
+        jwt.sign(payload, config.jwt_secret, { expiresIn: '10d' }, (err, token) => {
             if (err) {
                 reject(err);
             }
